@@ -1,94 +1,104 @@
-# 10x Astro Starter
+# 10x-cards
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+## Project Description
+
+10x-cards is a web application designed to help users quickly create and manage educational flashcards. By leveraging Large Language Models (LLMs) via API, the application automates the process of generating high-quality questions and answers from provided text, significantly reducing the time required to prepare study materials.
+
+The project addresses the main pain point of manual flashcard creation—time and effort—encouraging users to utilize effective study methods like spaced repetition.
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+**Frontend:**
+- **Framework:** Astro 5 (Static content & Layouts)
+- **UI Library:** React 19 (Interactive components)
+- **Language:** TypeScript 5
+- **Styling:** Tailwind CSS 4
+- **Components:** Shadcn/ui
 
-## Prerequisites
+**Backend:**
+- **Service:** Supabase (Backend-as-a-Service)
+- **Database:** PostgreSQL
+- **Authentication:** Supabase Auth
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+**AI Integration:**
+- **Provider:** OpenRouter.ai (Access to models like OpenAI, Anthropic, etc.)
 
-## Getting Started
+**Infrastructure:**
+- **Hosting:** DigitalOcean (Dockerized)
+- **CI/CD:** GitHub Actions
 
-1. Clone the repository:
+## Getting Started Locally
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
+Follow these steps to set up and run the project locally.
 
-2. Install dependencies:
+### Prerequisites
 
-```bash
-npm install
-```
+- **Node.js**: Version `v22.14.0` (Recommended to use `nvm`)
+- **npm** or similar package manager
 
-3. Run the development server:
+### Installation
 
-```bash
-npm run dev
-```
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/Zuziap24/10xflash.git
+    cd 10xflash
+    ```
 
-4. Build for production:
+2.  **Set up Node version**
+    If you have `nvm` installed, run:
+    ```bash
+    nvm use
+    ```
 
-```bash
-npm run build
-```
+3.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+4.  **Environment Configuration**
+    Create a `.env` file in the root directory based on `.env.example`:
+    ```bash
+    cp .env.example .env
+    ```
+    *Note: You will need to populate the `.env` file with your specific API keys (Supabase, OpenRouter).*
+
+5.  **Run the development server**
+    ```bash
+    npm run dev
+    ```
+    The application should now be running at `http://localhost:4321`.
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+In the project directory, you can run:
 
-## Project Structure
+-   `npm run dev`: Runs the app in development mode.
+-   `npm run build`: Builds the app for production.
+-   `npm run preview`: Previews the production build locally.
+-   `npm run lint`: Runs ESLint to identify code issues.
+-   `npm run lint:fix`: Runs ESLint and automatically fixes fixable issues.
+-   `npm run format`: Formats code using Prettier.
 
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
-```
+## Project Scope
 
-## AI Development Support
+### Key Features
+-   **Deck Management**: Create, edit, and delete thematic flashcard decks.
+-   **AI Generation**: Generate flashcards automatically by pasting text (1k-10k characters).
+-   **Manual Control**: Manually add, edit, or delete flashcards; review and accept AI suggestions.
+-   **Study Mode**: Interactive study session with difficulty ratings (Easy/Hard) to schedule reviews.
+-   **User Accounts**: Secure registration and login to keep data private.
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+### Boundaries (MVP)
+-   Web application only (Responsive Web Design).
+-   No file imports (PDF/DOCX) - text copy-paste only.
+-   No deck sharing between users.
+-   No nested sub-decks.
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
+## Project Status
 
-### Cursor IDE
-
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
-
-### GitHub Copilot
-
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
-
-### Windsurf
-
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+The project is currently in the initial development phase (MVP Construction).
+Current Version: `0.0.1`
 
 ## License
 
-MIT
+This project is licensed under the MIT License.
