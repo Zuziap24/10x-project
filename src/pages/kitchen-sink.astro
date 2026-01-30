@@ -1,0 +1,178 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Button } from "../components/fluent/Button";
+import { Input } from "../components/fluent/Input";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/fluent/Card";
+import { Title, Subtitle, Body, Caption } from "../components/fluent/Typography";
+import { KitchenSinkDialog } from "../components/fluent/KitchenSinkDialog";
+import { FlashcardGeneratorDemo } from "../components/fluent/FlashcardGeneratorDemo";
+---
+
+<Layout title="Fluent Design Kitchen Sink">
+  <div class="container mx-auto py-10 space-y-16 max-w-5xl px-4">
+    <div class="space-y-4 border-b border-border pb-8">
+      <Title>Fluent Design System</Title>
+      <Body className="text-muted-foreground text-lg">
+        A reference implementation of Fluent 2.0 principles adapted for the 10xFlash project. Focus on productivity,
+        clarity, and system integration.
+      </Body>
+    </div>
+
+    <!-- Flashcard Generator Demo -->
+    <section class="space-y-6">
+      <div class="space-y-2">
+        <Subtitle className="text-primary">Flashcard Generator Demo</Subtitle>
+        <Caption>Complete example showcasing all Fluent components working together.</Caption>
+      </div>
+      <FlashcardGeneratorDemo client:load />
+    </section>
+
+    <!-- Typography Section -->
+    <section class="space-y-6">
+      <div class="space-y-2">
+        <Subtitle className="text-primary">Typography</Subtitle>
+        <Caption>Semantic typography components enforcing hierarchy.</Caption>
+      </div>
+
+      <Card variant="surface" className="p-8 space-y-6">
+        <div class="space-y-1">
+          <span class="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Title</span>
+          <Title>The quick brown fox jumps over the lazy dog</Title>
+        </div>
+        <div class="space-y-1">
+          <span class="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Subtitle</span>
+          <Subtitle>The quick brown fox jumps over the lazy dog</Subtitle>
+        </div>
+        <div class="space-y-1">
+          <span class="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Body</span>
+          <Body
+            >The quick brown fox jumps over the lazy dog. Fluent emphasizes legibility and clear letterforms for
+            productive reading.</Body
+          >
+        </div>
+        <div class="space-y-1">
+          <span class="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Caption</span>
+          <Caption>The quick brown fox jumps over the lazy dog (Caption)</Caption>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Buttons Section -->
+    <section class="space-y-6">
+      <div class="space-y-2">
+        <Subtitle className="text-primary">Buttons</Subtitle>
+        <Caption>Interactive elements with clear states and hierarchy.</Caption>
+      </div>
+
+      <Card variant="surface" className="p-8">
+        <div class="flex flex-col gap-8">
+          <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-muted-foreground">Variants</h4>
+            <div class="flex flex-wrap gap-4 items-center">
+              <Button variant="accent">Accent Button</Button>
+              <Button variant="standard">Standard Button</Button>
+              <Button variant="subtle">Subtle Button</Button>
+              <Button variant="link">Link Button</Button>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-muted-foreground">Sizes</h4>
+            <div class="flex flex-wrap gap-4 items-center items-end">
+              <Button variant="accent" size="sm">Small</Button>
+              <Button variant="accent" size="default">Default</Button>
+              <Button variant="accent" size="lg">Large</Button>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h4 class="text-sm font-semibold text-muted-foreground">States</h4>
+            <div class="flex flex-wrap gap-4 items-center">
+              <Button variant="accent" disabled>Disabled Accent</Button>
+              <Button variant="standard" disabled>Disabled Standard</Button>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </section>
+
+    <!-- Inputs Section -->
+    <section class="space-y-6">
+      <div class="space-y-2">
+        <Subtitle className="text-primary">Inputs</Subtitle>
+        <Caption>Forms focusing on labels and content structure.</Caption>
+      </div>
+
+      <Card variant="surface" className="p-8">
+        <div class="grid gap-8 max-w-md">
+          <Input label="Email Address" placeholder="name@example.com" />
+
+          <Input label="Password" type="password" description="Must be at least 8 characters long." />
+
+          <Input label="Username" defaultValue="invalid user" error="This username is already taken." />
+        </div>
+      </Card>
+    </section>
+
+    <!-- Cards Section -->
+    <section class="space-y-6">
+      <div class="space-y-2">
+        <Subtitle className="text-primary">Cards</Subtitle>
+        <Caption>Containers for grouping related information.</Caption>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <Card variant="surface">
+          <CardHeader>
+            <CardTitle>Surface Card</CardTitle>
+            <CardDescription>Default container style</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p class="text-sm">Blends gently with the background, using a subtle border.</p>
+          </CardContent>
+          <CardFooter>
+            <Button variant="standard" size="sm">Action</Button>
+          </CardFooter>
+        </Card>
+
+        <Card variant="elevated">
+          <CardHeader>
+            <CardTitle>Elevated Card</CardTitle>
+            <CardDescription>For higher emphasis</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p class="text-sm">Uses shadow to separate from the background. Good for drag-and-drop items.</p>
+          </CardContent>
+          <CardFooter>
+            <Button variant="accent" size="sm">Action</Button>
+          </CardFooter>
+        </Card>
+
+        <Card variant="outlined">
+          <CardHeader>
+            <CardTitle>Outlined Card</CardTitle>
+            <CardDescription>Transparent background</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p class="text-sm">Matches background but defines boundaries with a border.</p>
+          </CardContent>
+          <CardFooter>
+            <Button variant="subtle" size="sm">Dismiss</Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </section>
+
+    <!-- Dialog Section -->
+    <section class="space-y-6">
+      <div class="space-y-2">
+        <Subtitle className="text-primary">Dialogs</Subtitle>
+        <Caption>Modal windows for critical actions.</Caption>
+      </div>
+
+      <Card variant="surface" className="p-12 flex justify-center items-center bg-muted/20 border-dashed">
+        <KitchenSinkDialog client:load />
+      </Card>
+    </section>
+  </div>
+</Layout>

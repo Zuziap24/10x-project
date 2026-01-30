@@ -1,0 +1,14 @@
+---
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import { RegisterForm } from "@/components/auth";
+
+// TODO: Add session check - if user is logged in, redirect to "/"
+// const user = Astro.locals.user;
+// if (user) {
+//   return Astro.redirect("/");
+// }
+---
+
+<AuthLayout title="Create Account - 10xCards">
+  <RegisterForm client:load />
+</AuthLayout>

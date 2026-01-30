@@ -1,0 +1,65 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "10xCards" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-background flex flex-col">
+    <header class="p-4">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="Back to home"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m12 19-7-7 7-7"></path>
+          <path d="M19 12H5"></path>
+        </svg>
+        <span class="text-sm">Back to home</span>
+      </a>
+    </header>
+
+    <main class="flex-1 flex items-center justify-center p-4">
+      <div class="w-full max-w-md">
+        <div class="flex flex-col items-center mb-8">
+          <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
+            <span class="text-primary-foreground font-bold text-xl">10x</span>
+          </div>
+          <h1 class="text-2xl font-bold text-foreground">10xCards</h1>
+          <p class="text-muted-foreground text-sm mt-1">AI-powered flashcard generation</p>
+        </div>
+
+        <slot />
+      </div>
+    </main>
+
+    <footer class="p-4 text-center">
+      <p class="text-sm text-muted-foreground">
+        &copy; {new Date().getFullYear()} 10xCards. All rights reserved.
+      </p>
+    </footer>
+  </body>
+</html>

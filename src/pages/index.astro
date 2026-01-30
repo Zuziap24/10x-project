@@ -1,8 +1,26 @@
 ---
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
+
+// Testowe ID decka - w produkcji użytkownik trafiłby tu z dashboardu
+const testDeckId = "test-deck-123";
 ---
 
-<Layout>
-  <Welcome />
+<Layout title="10xCards - Home">
+  <div class="container mx-auto max-w-2xl px-4 py-16">
+    <div class="text-center space-y-6">
+      <h1 class="text-4xl font-bold tracking-tight">10xCards</h1>
+      <p class="text-lg text-muted-foreground">AI-powered flashcard generation for effective learning</p>
+
+      <div class="flex flex-col gap-4 items-center pt-8">
+        <a
+          href={`/decks/${testDeckId}`}
+          class="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors"
+        >
+          View Test Deck Details
+        </a>
+
+        <p class="text-sm text-muted-foreground">Click above to test the Deck Details view implementation</p>
+      </div>
+    </div>
+  </div>
 </Layout>

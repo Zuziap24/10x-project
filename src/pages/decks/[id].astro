@@ -1,0 +1,19 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { DeckDetailsPage } from "../../components/decks/DeckDetailsPage";
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+// Validate the deck ID is present
+if (!id) {
+  return Astro.redirect("/dashboard");
+}
+---
+
+<Layout title="Deck Details | 10xCards">
+  <main class="min-h-screen bg-background">
+    <DeckDetailsPage client:only="react" deckId={id} />
+  </main>
+</Layout>
