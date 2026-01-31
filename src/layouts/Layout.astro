@@ -1,11 +1,15 @@
 ---
 import "../styles/global.css";
+import { UserMenu } from "@/components/auth";
 
 interface Props {
   title?: string;
 }
 
 const { title = "10x Astro Starter" } = Astro.props;
+
+// Get user from middleware
+const user = Astro.locals.user;
 ---
 
 <!doctype html>
@@ -17,8 +21,48 @@ const { title = "10x Astro Starter" } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body>
-    <slot />
+  <body class="min-h-screen bg-background flex flex-col">
+    <header
+      class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+    >
+      <div class="container flex h-14 items-center justify-between px-4">
+        <div class="flex items-center gap-2">
+          <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span class="text-primary-foreground font-bold text-sm">10x</span>
+            </div>
+            <span class="font-semibold text-lg">10xCards</span>
+          </a>
+        </div>
+
+        <nav class="flex items-center gap-4">
+          {
+            user ? (
+              <UserMenu userEmail={user.email || ""} client:load />
+            ) : (
+              <a
+                href="/signin"
+                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+              >
+                Sign In
+              </a>
+            )
+          }
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t py-6 md:py-0">
+      <div class="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row px-4">
+        <p class="text-center text-sm leading-loose text-muted-foreground md:text-left">
+          &copy; {new Date().getFullYear()} 10xCards. All rights reserved.
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
 

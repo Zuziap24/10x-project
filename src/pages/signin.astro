@@ -1,14 +1,48 @@
 ---
-import AuthLayout from "@/layouts/AuthLayout.astro";
-import { LoginForm } from "@/components/auth";
+import AuthLayout from "../layouts/AuthLayout.astro";
+import { LoginForm } from "../components/auth";
 
-// TODO: Add session check - if user is logged in, redirect to "/"
-// const user = Astro.locals.user;
-// if (user) {
-//   return Astro.redirect("/");
-// }
+// Check if user is already logged in
+const user = Astro.locals.user;
+if (user) {
+  return Astro.redirect("/");
+}
+
+// Get query params for error/success messages
+const errorParam = Astro.url.searchParams.get("error");
+const successParam = Astro.url.searchParams.get("success");
+
+// Map error codes to user-friendly messages
+const errorMessages: Record<string, string> = {
+  session_expired: "Your session has expired. Please sign in again.",
+  missing_code: "Invalid verification link. Please request a new one.",
+  invalid_code: "The verification code is invalid or has expired.",
+};
+
+// Map success codes to user-friendly messages
+const successMessages: Record<string, string> = {
+  password_updated: "Your password has been updated successfully. Please sign in with your new password.",
+  email_confirmed: "Your email has been confirmed. You can now sign in.",
+};
+
+const errorMessage = errorParam ? errorMessages[errorParam] || "An error occurred. Please try again." : null;
+const successMessage = successParam ? successMessages[successParam] || "Success!" : null;
 ---
 
 <AuthLayout title="Sign In - 10xCards">
+  {
+    errorMessage && (
+      <div class="mb-4 bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
+        <p>{errorMessage}</p>
+      </div>
+    )
+  }
+  {
+    successMessage && (
+      <div class="mb-4 bg-primary/10 border border-primary text-primary px-4 py-3 rounded-md text-sm">
+        <p>{successMessage}</p>
+      </div>
+    )
+  }
   <LoginForm client:load />
 </AuthLayout>

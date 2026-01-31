@@ -165,7 +165,7 @@ export function AIGenerationDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
@@ -185,27 +185,29 @@ export function AIGenerationDialog({
           </div>
         )}
 
-        {step === "input" ? (
-          <InputStep
-            sourceText={sourceText}
-            onSourceTextChange={setSourceText}
-            charCount={charCount}
-            isValidLength={isValidLength}
-            isGenerating={isGenerating}
-            onGenerate={handleGenerate}
-          />
-        ) : (
-          <ReviewStep
-            suggestions={suggestions}
-            selectedCount={selectedCount}
-            isAccepting={isAccepting}
-            onToggleSelection={handleToggleSelection}
-            onEditSuggestion={handleEditSuggestion}
-            onToggleAll={handleToggleAll}
-            onBack={handleBackToInput}
-            onSave={handleSaveSelected}
-          />
-        )}
+        <div className="flex-1 overflow-hidden">
+          {step === "input" ? (
+            <InputStep
+              sourceText={sourceText}
+              onSourceTextChange={setSourceText}
+              charCount={charCount}
+              isValidLength={isValidLength}
+              isGenerating={isGenerating}
+              onGenerate={handleGenerate}
+            />
+          ) : (
+            <ReviewStep
+              suggestions={suggestions}
+              selectedCount={selectedCount}
+              isAccepting={isAccepting}
+              onToggleSelection={handleToggleSelection}
+              onEditSuggestion={handleEditSuggestion}
+              onToggleAll={handleToggleAll}
+              onBack={handleBackToInput}
+              onSave={handleSaveSelected}
+            />
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
@@ -240,15 +242,15 @@ function InputStep({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
+    <div className="flex h-full flex-col space-y-4">
+      <div className="flex min-h-0 flex-1 flex-col space-y-2">
         <Label htmlFor="source-text">Source Text</Label>
         <Textarea
           id="source-text"
           placeholder="Paste your text here (e.g., notes, article, textbook excerpt)..."
           value={sourceText}
           onChange={(e) => onSourceTextChange(e.target.value)}
-          className="min-h-[200px] resize-none"
+          className="min-h-[200px] max-h-[50vh] flex-1 resize-none"
           disabled={isGenerating}
         />
         <div className="flex justify-between text-xs">
@@ -261,7 +263,7 @@ function InputStep({
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex shrink-0 justify-end">
         <Button onClick={onGenerate} disabled={!isValidLength || isGenerating}>
           {isGenerating ? (
             <>

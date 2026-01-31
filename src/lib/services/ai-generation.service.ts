@@ -100,11 +100,19 @@ export class AIGenerationService {
     const systemMessage = `You are an expert at creating high-quality flashcards for effective learning.
 Generate exactly ${count} flashcards from the provided text.
 Each flashcard should have a clear question (front) and answer (back).
-Focus on key concepts and facts suitable for spaced repetition.`;
+Focus on key concepts and facts suitable for spaced repetition.
+
+IMPORTANT: Detect the language of the source text and create ALL flashcards in that SAME language.
+For example:
+- If the source text is in Polish, write questions and answers in Polish.
+- If the source text is in English, write questions and answers in English.
+- If the source text is in German, write questions and answers in German.
+Do NOT translate or mix languages. Keep everything in the original language of the source text.`;
 
     const userMessage = `Source text:\n${sourceText}`;
 
     // Response format (JSON Schema) expected by the consumer
+    // Note: strict mode requires additionalProperties: false at all object levels
     const responseFormat = {
       type: "json_schema" as const,
       json_schema: {
@@ -122,10 +130,12 @@ Focus on key concepts and facts suitable for spaced repetition.`;
                   back: { type: "string" },
                 },
                 required: ["front", "back"],
+                additionalProperties: false,
               },
             },
           },
           required: ["flashcards"],
+          additionalProperties: false,
         },
       },
     };

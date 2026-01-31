@@ -43,10 +43,28 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
       setIsLoading(true);
 
       try {
+        const response = await fetch("/api/auth/signin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+          credentials: "same-origin",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "Failed to sign in");
+        }
+
+        // Call custom onSubmit if provided
         if (onSubmit) {
           await onSubmit(data);
         }
-        // TODO: Integrate with API endpoint /api/auth/signin
+
+        // Server-side reload to update session
+        window.location.href = "/";
       } catch (err) {
         const message = err instanceof Error ? err.message : "An error occurred during sign in";
         setError(message);

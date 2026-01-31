@@ -1,27 +1,39 @@
 import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Loader2, AlertCircle } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { registerSchema, type RegisterFormData } from "@/lib/validators/auth.validator";
 
 // ------------------------------------------------------------------
-// Component Props
+// Validation Schema
 // ------------------------------------------------------------------
 
-interface RegisterFormProps {
-  onSubmit?: (data: RegisterFormData) => Promise<void>;
-}
+const updatePasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(1, "Password is required")
+      .min(6, "Password must be at least 6 characters")
+      .max(72, "Password must be less than 72 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+type UpdatePasswordFormData = z.infer<typeof updatePasswordSchema>;
 
 // ------------------------------------------------------------------
 // Main Component
 // ------------------------------------------------------------------
 
-export function RegisterForm({ onSubmit }: RegisterFormProps) {
+export function UpdatePasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,61 +41,49 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+  } = useForm<UpdatePasswordFormData>({
+    resolver: zodResolver(updatePasswordSchema),
     defaultValues: {
-      email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  const handleFormSubmit = useCallback(
-    async (data: RegisterFormData) => {
-      setError(null);
-      setIsLoading(true);
+  const handleFormSubmit = useCallback(async (data: UpdatePasswordFormData) => {
+    setError(null);
+    setIsLoading(true);
 
-      try {
-        const response = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-          }),
-          credentials: "same-origin",
-        });
+    try {
+      const response = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password: data.password }),
+        credentials: "same-origin",
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (!response.ok) {
-          throw new Error(result.message || "Failed to register");
-        }
-
-        // Call custom onSubmit if provided
-        if (onSubmit) {
-          await onSubmit(data);
-        }
-
-        // Server-side reload to update session
-        window.location.href = "/";
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "An error occurred during registration";
-        setError(message);
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to update password");
       }
-    },
-    [onSubmit]
-  );
+
+      // Redirect to sign in page with success message
+      window.location.href = "/signin?success=password_updated";
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "An error occurred while updating password";
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle className="text-xl">Create an account</CardTitle>
-        <CardDescription>Enter your details to get started</CardDescription>
+        <CardTitle className="text-xl">Set new password</CardTitle>
+        <CardDescription>Enter your new password below</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="grid gap-4">
@@ -95,26 +95,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
           )}
 
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="name@example.com"
-              autoComplete="email"
-              disabled={isLoading}
-              aria-invalid={!!errors.email}
-              aria-describedby={errors.email ? "email-error" : undefined}
-              {...register("email")}
-            />
-            {errors.email && (
-              <p id="email-error" className="text-sm text-destructive">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">New Password</Label>
             <Input
               id="password"
               type="password"
@@ -134,7 +115,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="confirmPassword">Confirm password</Label>
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -154,18 +135,10 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
 
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Create account
+            Update password
           </Button>
         </form>
       </CardContent>
-      <CardFooter className="flex-col gap-2">
-        <div className="text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <a href="/signin" className="text-primary underline-offset-4 hover:underline">
-            Sign in
-          </a>
-        </div>
-      </CardFooter>
     </Card>
   );
 }

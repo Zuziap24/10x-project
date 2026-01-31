@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { DashboardPage } from "../components/decks/DashboardPage";
+
+export const prerender = false;
+
+// Require authentication for dashboard
+const user = Astro.locals.user;
+
+if (!user) {
+  return Astro.redirect("/signin");
+}
+---
+
+<Layout title="Dashboard | 10xCards">
+  <main class="min-h-screen bg-background">
+    <DashboardPage client:only="react" />
+  </main>
+</Layout>

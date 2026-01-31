@@ -1,10 +1,13 @@
 import type { APIRoute } from "astro";
 import { generateFlashcardsSchema } from "../../../../lib/validators/generation.validator";
-import { AIGenerationService } from "../../../../lib/services/ai-generation.service";
+import { AIGenerationService, AIGenerationError } from "../../../../lib/services/ai-generation.service";
 import { calculateSHA256 } from "../../../../lib/utils/hash";
 import { checkGenerationRateLimit } from "../../../../lib/utils/rate-limit";
+import { Logger } from "../../../../lib/logger";
 import type { GenerateFlashcardsResponseDto, ApiError } from "../../../../types";
 export const prerender = false;
+
+const logger = new Logger("api/decks/generate");
 
 /**
  * POST /api/decks/:deckId/generate
@@ -176,7 +179,13 @@ export const POST: APIRoute = async (context) => {
     });
   } catch (error) {
     // Handle AI generation errors
-    if (error instanceof Error && error.name === "AIGenerationError") {
+    if (error instanceof AIGenerationError) {
+      // Log detailed error information for debugging
+      logger.error(error, {
+        errorCode: error.errorCode,
+        cause: error.cause instanceof Error ? error.cause.message : String(error.cause),
+      });
+
       // Log error to database
       try {
         const supabase = context.locals.supabase;
@@ -185,11 +194,10 @@ export const POST: APIRoute = async (context) => {
         } = await supabase.auth.getUser();
 
         if (user) {
-          const aiError = error as Error & { errorCode?: string };
           await supabase.from("generation_error_logs").insert({
             user_id: user.id,
             model: "unknown",
-            error_code: aiError.errorCode || "UNKNOWN_ERROR",
+            error_code: error.errorCode || "UNKNOWN_ERROR",
             error_message: error.message,
           });
         }
@@ -204,6 +212,7 @@ export const POST: APIRoute = async (context) => {
             message: "Failed to generate flashcards from the provided text",
             details: {
               error: error.message,
+              errorCode: error.errorCode,
             },
           },
         } satisfies ApiError),
@@ -212,6 +221,9 @@ export const POST: APIRoute = async (context) => {
     }
 
     // Handle unexpected errors
+    const unexpectedError = error instanceof Error ? error : new Error(String(error));
+    logger.error(unexpectedError, { endpoint: "generate" });
+
     return new Response(
       JSON.stringify({
         error: {

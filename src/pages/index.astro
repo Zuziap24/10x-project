@@ -1,8 +1,14 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-// Testowe ID decka - w produkcji użytkownik trafiłby tu z dashboardu
-const testDeckId = "test-deck-123";
+export const prerender = false;
+
+// Redirect authenticated users to dashboard
+const user = Astro.locals.user;
+
+if (user) {
+  return Astro.redirect("/dashboard");
+}
 ---
 
 <Layout title="10xCards - Home">
@@ -13,13 +19,16 @@ const testDeckId = "test-deck-123";
 
       <div class="flex flex-col gap-4 items-center pt-8">
         <a
-          href={`/decks/${testDeckId}`}
+          href="/signin"
           class="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors"
         >
-          View Test Deck Details
+          Sign In to Get Started
         </a>
 
-        <p class="text-sm text-muted-foreground">Click above to test the Deck Details view implementation</p>
+        <p class="text-sm text-muted-foreground">
+          Don't have an account?{" "}
+          <a href="/register" class="text-primary underline hover:no-underline">Register here</a>
+        </p>
       </div>
     </div>
   </div>

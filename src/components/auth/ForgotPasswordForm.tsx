@@ -43,10 +43,26 @@ export function ForgotPasswordForm({ onSubmit }: ForgotPasswordFormProps) {
       setIsLoading(true);
 
       try {
+        const response = await fetch("/api/auth/reset-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+          credentials: "same-origin",
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "Failed to send reset email");
+        }
+
+        // Call custom onSubmit if provided
         if (onSubmit) {
           await onSubmit(data);
         }
-        // TODO: Integrate with API endpoint for password reset
+
         setIsSuccess(true);
       } catch (err) {
         const message = err instanceof Error ? err.message : "An error occurred while sending reset email";

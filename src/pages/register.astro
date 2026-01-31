@@ -1,14 +1,32 @@
 ---
-import AuthLayout from "@/layouts/AuthLayout.astro";
-import { RegisterForm } from "@/components/auth";
+import AuthLayout from "../layouts/AuthLayout.astro";
+import { RegisterForm } from "../components/auth";
 
-// TODO: Add session check - if user is logged in, redirect to "/"
-// const user = Astro.locals.user;
-// if (user) {
-//   return Astro.redirect("/");
-// }
+// Check if user is already logged in
+const user = Astro.locals.user;
+if (user) {
+  return Astro.redirect("/");
+}
+
+// Get query params for error messages
+const errorParam = Astro.url.searchParams.get("error");
+
+// Map error codes to user-friendly messages
+const errorMessages: Record<string, string> = {
+  email_exists: "An account with this email already exists. Please sign in instead.",
+  invalid_email: "Please provide a valid email address.",
+};
+
+const errorMessage = errorParam ? errorMessages[errorParam] || "An error occurred. Please try again." : null;
 ---
 
 <AuthLayout title="Create Account - 10xCards">
+  {
+    errorMessage && (
+      <div class="mb-4 bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md text-sm">
+        <p>{errorMessage}</p>
+      </div>
+    )
+  }
   <RegisterForm client:load />
 </AuthLayout>
