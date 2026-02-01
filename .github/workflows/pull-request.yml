@@ -1,0 +1,112 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+
+      - name: Run linter
+        run: npm run lint
+
+  unit-test:
+    name: Unit Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload unit test coverage
+        uses: actions/upload-artifact@v6
+        with:
+          name: unit-coverage
+          path: coverage/
+          retention-days: 7
+
+  e2e-test:
+    name: E2E Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    environment: integration
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+
+      - name: Install Playwright Chromium browser
+        run: npx playwright install chromium --with-deps
+
+      - name: Run E2E tests with coverage
+        run: npm run test:e2e -- --reporter=html --reporter=json --output=playwright-report/results.json
+
+      - name: Upload E2E test report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: e2e-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  status-comment:
+    name: PR Status Comment
+    needs: [lint, unit-test, e2e-test]
+    runs-on: ubuntu-latest
+    if: success()
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download unit test coverage
+        uses: actions/download-artifact@v7
+        with:
+          name: unit-coverage
+          path: unit-coverage/
+
+      - name: Download E2E test report
+        uses: actions/download-artifact@v7
+        with:
+          name: e2e-report
+          path: e2e-report/
+
+      - name: Create PR comment
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## ✅ CI Pipeline Passed
+
+            | Job | Status |
+            |-----|--------|
+            | Lint | ✅ Passed |
+            | Unit Tests | ✅ Passed |
+            | E2E Tests | ✅ Passed |
+
+            ### Artifacts
+            - 📊 Unit test coverage report available
+            - 🎭 E2E test report available
+
+            ---
+            *Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}*
