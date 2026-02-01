@@ -65,9 +65,9 @@ export const DeckHeader = memo(function DeckHeader({ deck, isLoading, onAddManua
             </Button>
           )}
 
-          <Button variant="outline" onClick={onAddManual}>
+          <Button variant="outline" onClick={onAddManual} data-testid="add-flashcard-button">
             <Plus className="mr-2 h-4 w-4" />
-            Add Card
+            Add Flashcard
           </Button>
 
           <Button variant="secondary" onClick={onGenerateAI} data-testid="generate-ai-button">

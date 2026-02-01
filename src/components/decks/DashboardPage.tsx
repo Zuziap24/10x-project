@@ -170,27 +170,29 @@ interface DeckCardProps {
 
 function DeckCard({ deck }: DeckCardProps) {
   return (
-    <Card className="group transition-shadow hover:shadow-md" data-testid="deck-card">
-      <CardHeader>
-        <CardTitle className="line-clamp-1">{deck.name}</CardTitle>
-        {deck.description && <CardDescription className="line-clamp-2">{deck.description}</CardDescription>}
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <BookOpen className="h-4 w-4" />
-            <span>{deck.flashcard_count} cards</span>
-          </div>
-          {deck.due_flashcard_count > 0 && (
-            <div className="flex items-center gap-1 text-orange-600">
-              <Clock className="h-4 w-4" />
-              <span>{deck.due_flashcard_count} due</span>
+    <a href={`/decks/${deck.id}`} className="block" data-testid="deck-card">
+      <Card className="group cursor-pointer transition-shadow hover:shadow-md" data-testid={`deck-${deck.name}`}>
+        <CardHeader>
+          <CardTitle className="line-clamp-1">{deck.name}</CardTitle>
+          {deck.description && <CardDescription className="line-clamp-2">{deck.description}</CardDescription>}
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <BookOpen className="h-4 w-4" />
+              <span>
+                {deck.flashcard_count} {deck.flashcard_count === 1 ? "flashcard" : "flashcards"}
+              </span>
             </div>
-          )}
-        </div>
-      </CardContent>
-      <CardFooter>
-        <a href={`/decks/${deck.id}`} className="w-full">
+            {deck.due_flashcard_count > 0 && (
+              <div className="flex items-center gap-1 text-orange-600">
+                <Clock className="h-4 w-4" />
+                <span>{deck.due_flashcard_count} due</span>
+              </div>
+            )}
+          </div>
+        </CardContent>
+        <CardFooter>
           <Button
             variant="outline"
             className="w-full group-hover:bg-primary group-hover:text-primary-foreground"
@@ -199,9 +201,9 @@ function DeckCard({ deck }: DeckCardProps) {
             <span>Open Deck</span>
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
-        </a>
-      </CardFooter>
-    </Card>
+        </CardFooter>
+      </Card>
+    </a>
   );
 }
 
@@ -300,6 +302,7 @@ function CreateDeckDialog({ open, onOpenChange, onSubmit, isLoading }: CreateDec
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
+                name="name"
                 placeholder="e.g., JavaScript Fundamentals"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -311,6 +314,7 @@ function CreateDeckDialog({ open, onOpenChange, onSubmit, isLoading }: CreateDec
               <Label htmlFor="description">Description (optional)</Label>
               <Textarea
                 id="description"
+                name="description"
                 placeholder="A brief description of this deck..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}

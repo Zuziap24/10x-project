@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import { registerSchema } from "@/lib/validators/auth.validator";
+import { registerApiSchema } from "@/lib/validators/auth.validator";
 import { createSupabaseServerInstance } from "@/db/supabase.client";
 
 export const prerender = false;
@@ -14,7 +14,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     // Parse and validate request body
     const body = await request.json();
-    const validatedData = registerSchema.parse(body);
+    const validatedData = registerApiSchema.parse(body);
 
     // Register with Supabase
     const { data, error } = await supabase.auth.signUp({

@@ -62,6 +62,14 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
           throw new Error(result.message || "Failed to register");
         }
 
+        // Check if email confirmation is needed
+        if (result.needsConfirmation) {
+          // User already exists or needs email confirmation
+          // Redirect to signin page with a message
+          window.location.href = "/signin?message=check_email";
+          return;
+        }
+
         // Call custom onSubmit if provided
         if (onSubmit) {
           await onSubmit(data);

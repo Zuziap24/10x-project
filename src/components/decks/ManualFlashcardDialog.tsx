@@ -98,7 +98,7 @@ export function ManualFlashcardDialog({
   const description = isEdit
     ? "Update the content of this flashcard."
     : "Create a new flashcard by filling in the front and back sides.";
-  const submitLabel = isEdit ? "Save Changes" : "Create Flashcard";
+  const submitLabel = isEdit ? "Save Changes" : "Save";
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
