@@ -195,6 +195,11 @@ export const POST: APIRoute = async (context) => {
       .single();
 
     if (createError || !deck) {
+      logger.error(new Error(`Failed to create deck: ${createError?.message || "No data returned"}`), {
+        action: "create_deck",
+        supabaseError: createError,
+        userId: user.id,
+      });
       throw new Error("Failed to create deck");
     }
 
