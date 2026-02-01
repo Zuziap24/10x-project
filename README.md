@@ -2,7 +2,7 @@
 
 ## Project Description
 
-10x-cards is a web application designed to help users quickly create and manage educational flashcards. By leveraging Large Language Models (LLMs) via API, the application automates the process of generating high-quality questions and answers from provided text, significantly reducing the time required to prepare study materials.
+10x-cards.pl is a web application designed to help users quickly create and manage educational flashcards. By leveraging Large Language Models (LLMs) via API, the application automates the process of generating high-quality questions and answers from provided text, significantly reducing the time required to prepare study materials.
 
 The project addresses the main pain point of manual flashcard creation—time and effort—encouraging users to utilize effective study methods like spaced repetition.
 
