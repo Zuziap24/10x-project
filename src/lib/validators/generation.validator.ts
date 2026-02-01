@@ -5,10 +5,12 @@ import { z } from "zod";
  * Add more models as needed based on OpenRouter availability and testing.
  */
 const ALLOWED_MODELS = [
+  "openai/gpt-4o-mini", // $0.15/$0.60 per million tokens - reliable JSON Schema support
+  "deepseek/deepseek-chat-v3-0324", // $0.14/$0.28 per million tokens
   "openai/gpt-4o",
-  "openai/gpt-4o-mini",
   "anthropic/claude-3.5-sonnet",
-  "google/gemini-pro-1.5",
+  "arcee-ai/trinity-large-preview:free", // Free model - 400B MoE with 13B active
+  "meta-llama/llama-3.1-8b-instruct:free", // Free model (lower quality)
 ] as const;
 
 /**
@@ -22,7 +24,7 @@ export const generateFlashcardsSchema = z.object({
     .min(1000, "Source text must be at least 1000 characters long")
     .max(10000, "Source text must not exceed 10000 characters"),
 
-  model: z.enum(ALLOWED_MODELS).optional().default("openai/gpt-4o"),
+  model: z.enum(ALLOWED_MODELS).optional().default("arcee-ai/trinity-large-preview:free"),
 
   count: z
     .number()

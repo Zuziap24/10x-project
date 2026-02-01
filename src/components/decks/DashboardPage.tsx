@@ -170,7 +170,7 @@ interface DeckCardProps {
 
 function DeckCard({ deck }: DeckCardProps) {
   return (
-    <Card className="group transition-shadow hover:shadow-md">
+    <Card className="group transition-shadow hover:shadow-md" data-testid="deck-card">
       <CardHeader>
         <CardTitle className="line-clamp-1">{deck.name}</CardTitle>
         {deck.description && <CardDescription className="line-clamp-2">{deck.description}</CardDescription>}
@@ -191,7 +191,11 @@ function DeckCard({ deck }: DeckCardProps) {
       </CardContent>
       <CardFooter>
         <a href={`/decks/${deck.id}`} className="w-full">
-          <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground">
+          <Button
+            variant="outline"
+            className="w-full group-hover:bg-primary group-hover:text-primary-foreground"
+            data-testid="open-deck-button"
+          >
             <span>Open Deck</span>
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
@@ -211,13 +215,16 @@ interface EmptyStateProps {
 
 function EmptyState({ onCreateClick }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
+    <div
+      className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center"
+      data-testid="empty-state"
+    >
       <BookOpen className="mb-4 h-12 w-12 text-muted-foreground" />
       <h2 className="mb-2 text-xl font-semibold">No decks yet</h2>
       <p className="mb-6 max-w-sm text-muted-foreground">
         Create your first deck to start generating flashcards with AI or manually.
       </p>
-      <Button onClick={onCreateClick}>
+      <Button onClick={onCreateClick} data-testid="create-first-deck-button">
         <Plus className="mr-2 h-4 w-4" />
         Create Your First Deck
       </Button>
@@ -277,12 +284,12 @@ function CreateDeckDialog({ open, onOpenChange, onSubmit, isLoading }: CreateDec
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>
+        <Button data-testid="new-deck-button">
           <Plus className="mr-2 h-4 w-4" />
           New Deck
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent data-testid="create-deck-dialog">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Create New Deck</DialogTitle>
@@ -297,6 +304,7 @@ function CreateDeckDialog({ open, onOpenChange, onSubmit, isLoading }: CreateDec
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={isLoading}
+                data-testid="deck-name-input"
               />
             </div>
             <div className="space-y-2">
@@ -316,7 +324,7 @@ function CreateDeckDialog({ open, onOpenChange, onSubmit, isLoading }: CreateDec
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} data-testid="create-deck-submit">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

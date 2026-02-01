@@ -227,7 +227,7 @@ export class OpenRouterService {
 
     this._apiKeyProvider = options.apiKeyProvider;
     this._baseUrl = options.baseUrl || "https://openrouter.ai/api/v1";
-    this._defaultModel = options.defaultModel || "openai/gpt-5-mini";
+    this._defaultModel = options.defaultModel || "arcee-ai/trinity-large-preview:free";
     this._defaultParams = options.defaultParams || {};
     this._timeoutMs = options.timeoutMs || 30000; // 30s default
     this._retryConfig = options.retry || {
@@ -259,6 +259,7 @@ export class OpenRouterService {
   async sendMessage(params: SendMessageParams): Promise<ServiceResponse> {
     try {
       this._usageMetrics.totalRequests++;
+      console.log("[OpenRouter] sendMessage called with model:", params.model || this._defaultModel);
 
       // Walidacja podstawowa
       if (!params.userMessage && (!params.conversation || params.conversation.length === 0)) {
@@ -273,9 +274,11 @@ export class OpenRouterService {
 
       // Budowanie payload
       const payload = this._buildPayload(params);
+      console.log("[OpenRouter] Payload built, model:", payload.model);
 
       // Wywołanie API
       const response = await this._request(payload);
+      console.log("[OpenRouter] API response received");
 
       // Formatowanie odpowiedzi
       const formattedResponse = this._formatResponseForClient(response, params.responseFormat);

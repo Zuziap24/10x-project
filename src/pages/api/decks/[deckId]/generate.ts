@@ -139,6 +139,7 @@ export const POST: APIRoute = async (context) => {
 
     // Step 7: Generate flashcards using AI service (with mocks in development)
     const useMockAI = import.meta.env.USE_MOCK_AI !== "false";
+    console.log("[Generate Endpoint] useMockAI:", useMockAI, "model:", model);
     const aiService = new AIGenerationService(import.meta.env.OPENROUTER_API_KEY || "", useMockAI);
 
     const { suggestions, generationDuration } = await aiService.generateFlashcards({

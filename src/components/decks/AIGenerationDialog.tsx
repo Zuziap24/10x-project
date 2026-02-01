@@ -165,7 +165,7 @@ export function AIGenerationDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col" data-testid="ai-generation-dialog">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
@@ -242,7 +242,7 @@ function InputStep({
   };
 
   return (
-    <div className="flex h-full flex-col space-y-4">
+    <div className="flex h-full flex-col space-y-4" data-testid="ai-input-step">
       <div className="flex min-h-0 flex-1 flex-col space-y-2">
         <Label htmlFor="source-text">Source Text</Label>
         <Textarea
@@ -252,9 +252,10 @@ function InputStep({
           onChange={(e) => onSourceTextChange(e.target.value)}
           className="min-h-[200px] max-h-[50vh] flex-1 resize-none"
           disabled={isGenerating}
+          data-testid="source-text-input"
         />
         <div className="flex justify-between text-xs">
-          <span className={getCharCountColor()}>
+          <span className={getCharCountColor()} data-testid="char-count">
             {charCount.toLocaleString()} / {MIN_CHARS.toLocaleString()} - {MAX_CHARS.toLocaleString()} characters
           </span>
           {charCount > 0 && charCount < MIN_CHARS && (
@@ -264,7 +265,7 @@ function InputStep({
       </div>
 
       <div className="flex shrink-0 justify-end">
-        <Button onClick={onGenerate} disabled={!isValidLength || isGenerating}>
+        <Button onClick={onGenerate} disabled={!isValidLength || isGenerating} data-testid="generate-flashcards-button">
           {isGenerating ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -310,7 +311,7 @@ function ReviewStep({
   const allSelected = suggestions.every((s) => s.isSelected);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="ai-review-step">
       {/* Header with select all */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -330,7 +331,7 @@ function ReviewStep({
       </div>
 
       {/* Suggestions list */}
-      <ScrollArea className="h-[300px] rounded-md border p-4">
+      <ScrollArea className="h-[300px] rounded-md border p-4" data-testid="suggestions-list">
         <div className="space-y-4">
           {suggestions.map((suggestion) => (
             <ReviewItem
@@ -345,10 +346,10 @@ function ReviewStep({
 
       {/* Actions */}
       <div className="flex justify-between">
-        <Button variant="outline" onClick={onBack} disabled={isAccepting}>
+        <Button variant="outline" onClick={onBack} disabled={isAccepting} data-testid="back-to-input-button">
           Back
         </Button>
-        <Button onClick={onSave} disabled={selectedCount === 0 || isAccepting}>
+        <Button onClick={onSave} disabled={selectedCount === 0 || isAccepting} data-testid="save-flashcards-button">
           {isAccepting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -378,12 +379,16 @@ interface ReviewItemProps {
 
 function ReviewItem({ suggestion, onToggleSelection, onEditSuggestion }: ReviewItemProps) {
   return (
-    <div className={`rounded-md border p-3 transition-opacity ${!suggestion.isSelected ? "opacity-50" : ""}`}>
+    <div
+      className={`rounded-md border p-3 transition-opacity ${!suggestion.isSelected ? "opacity-50" : ""}`}
+      data-testid="suggestion-item"
+    >
       <div className="mb-2 flex items-center gap-2">
         <Checkbox
           checked={suggestion.isSelected}
           onCheckedChange={() => onToggleSelection(suggestion.tempId)}
           aria-label={suggestion.isSelected ? "Deselect this card" : "Select this card"}
+          data-testid="suggestion-checkbox"
         />
         {suggestion.isEdited && <span className="text-xs text-amber-500">(edited)</span>}
       </div>
@@ -396,6 +401,7 @@ function ReviewItem({ suggestion, onToggleSelection, onEditSuggestion }: ReviewI
             onChange={(e) => onEditSuggestion(suggestion.tempId, "front", e.target.value)}
             className="mt-1 min-h-[60px] resize-none text-sm"
             disabled={!suggestion.isSelected}
+            data-testid="suggestion-front-input"
           />
         </div>
         <div>
@@ -405,6 +411,7 @@ function ReviewItem({ suggestion, onToggleSelection, onEditSuggestion }: ReviewI
             onChange={(e) => onEditSuggestion(suggestion.tempId, "back", e.target.value)}
             className="mt-1 min-h-[60px] resize-none text-sm"
             disabled={!suggestion.isSelected}
+            data-testid="suggestion-back-input"
           />
         </div>
       </div>

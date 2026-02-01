@@ -21,11 +21,12 @@ export const DeckHeader = memo(function DeckHeader({ deck, isLoading, onAddManua
   }
 
   return (
-    <header className="mb-8 space-y-4">
+    <header className="mb-8 space-y-4" data-testid="deck-header">
       {/* Back link */}
       <a
         href="/dashboard"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        data-testid="back-to-dashboard-link"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Dashboard
@@ -34,7 +35,9 @@ export const DeckHeader = memo(function DeckHeader({ deck, isLoading, onAddManua
       {/* Title and Stats */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">{deck.name}</h1>
+          <h1 className="text-3xl font-bold tracking-tight" data-testid="deck-title">
+            {deck.name}
+          </h1>
           {deck.description && <p className="text-muted-foreground">{deck.description}</p>}
 
           {/* Stats Badges */}
@@ -67,7 +70,7 @@ export const DeckHeader = memo(function DeckHeader({ deck, isLoading, onAddManua
             Add Card
           </Button>
 
-          <Button variant="secondary" onClick={onGenerateAI}>
+          <Button variant="secondary" onClick={onGenerateAI} data-testid="generate-ai-button">
             <Sparkles className="mr-2 h-4 w-4" />
             Generate with AI
           </Button>

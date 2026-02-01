@@ -93,6 +93,7 @@ export class AIGenerationService {
   private async callOpenRouter(model: string, sourceText: string, count: number): Promise<GeneratedSuggestionDto[]> {
     // Configure model and send a single conversational request using OpenRouterService
     // Set default model for this call
+    console.log("[AI-Generation] Starting callOpenRouter with model:", model);
     if (model) {
       this.openRouter.setDefaultModel(model);
     }
@@ -151,8 +152,15 @@ Do NOT translate or mix languages. Keep everything in the original language of t
       responseFormat,
     });
 
+    console.log("[AI-Generation] OpenRouter result:", {
+      success: result.success,
+      hasData: !!result.data,
+      error: result.error,
+    });
+
     if (!result.success) {
       const err = result.error;
+      console.error("[AI-Generation] OpenRouter error:", err);
       throw new AIGenerationError(err?.message || "AI generation failed", err?.code || "AI_ERROR", err?.details);
     }
 
