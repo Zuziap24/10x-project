@@ -108,11 +108,37 @@ export class AIGenerationDialog {
   }
 
   /**
+   * Check if rate limit error is displayed
+   */
+  async hasRateLimitError(): Promise<boolean> {
+    const errorVisible = await this.errorMessage.isVisible();
+    if (!errorVisible) return false;
+    const text = await this.errorMessage.textContent();
+    return text?.toLowerCase().includes("rate limit") ?? false;
+  }
+
+  /**
    * Click generate button and wait for review step
+   * Throws if rate limit error is encountered
    */
   async generate(): Promise<void> {
     await this.generateButton.click();
-    await expect(this.reviewStep).toBeVisible({ timeout: 60000 }); // AI generation can take time
+
+    // Wait for either review step or error message
+    const result = await Promise.race([
+      this.reviewStep.waitFor({ state: "visible", timeout: 60000 }).then(() => "success" as const),
+      this.errorMessage.waitFor({ state: "visible", timeout: 60000 }).then(() => "error" as const),
+    ]);
+
+    if (result === "error") {
+      const errorText = await this.errorMessage.textContent();
+      if (errorText?.toLowerCase().includes("rate limit")) {
+        throw new Error("RATE_LIMIT: Generation rate limit exceeded. Test should be skipped or retried later.");
+      }
+      throw new Error(`Generation failed: ${errorText}`);
+    }
+
+    await expect(this.reviewStep).toBeVisible();
   }
 
   /**

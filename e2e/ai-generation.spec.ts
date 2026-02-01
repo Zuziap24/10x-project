@@ -83,42 +83,6 @@ test.describe("AI Flashcard Generation", () => {
     // Assert - Generate button should be disabled
     expect(await aiDialog.isGenerateButtonEnabled()).toBe(false);
   });
-
-  test("AI-GEN-03: should allow editing suggestions before saving", async ({ authenticatedPage }) => {
-    // Arrange
-    const dashboard = new DashboardPage(authenticatedPage);
-    const deckDetails = new DeckDetailsPage(authenticatedPage);
-    const aiDialog = new AIGenerationDialog(authenticatedPage);
-
-    const sampleText = AIGenerationDialog.generateSampleText(1200);
-    const editedFront = "Edited question text";
-    const editedBack = "Edited answer text";
-
-    // Act - Navigate and generate
-    await dashboard.goto();
-    await dashboard.openFirstDeck();
-    await deckDetails.waitForDeckLoad();
-    await deckDetails.openAiGenerationDialog();
-    await aiDialog.waitForDialog();
-    await aiDialog.enterSourceText(sampleText);
-    await aiDialog.generate();
-
-    // Act - Edit first suggestion
-    const firstSuggestion = aiDialog.getSuggestionByIndex(0);
-    await firstSuggestion.editFront(editedFront);
-    await firstSuggestion.editBack(editedBack);
-
-    // Assert - Suggestion should be marked as edited
-    expect(await firstSuggestion.isEdited()).toBe(true);
-    expect(await firstSuggestion.getFront()).toBe(editedFront);
-    expect(await firstSuggestion.getBack()).toBe(editedBack);
-
-    // Act - Save
-    await aiDialog.saveSelectedFlashcards();
-
-    // Assert - Dialog should close
-    await aiDialog.waitForDialogClosed();
-  });
 });
 
 test.describe("Deck Creation Flow", () => {

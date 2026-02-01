@@ -51,8 +51,13 @@ export default defineConfig({
   // Configure projects for major browsers - zgodnie z guidelines: tylko Chromium
   projects: [
     {
+      name: "setup",
+      testMatch: /global\.setup\.ts/,
+    },
+    {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup"],
       teardown: "cleanup",
     },
     {
@@ -72,7 +77,8 @@ export default defineConfig({
       SUPABASE_URL: process.env.SUPABASE_URL || "",
       SUPABASE_KEY: process.env.SUPABASE_KEY || "",
       OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || "",
-      USE_MOCK_AI: process.env.USE_MOCK_AI || "true",
+      // Always use mock AI for E2E tests to avoid rate limits and flakiness
+      USE_MOCK_AI: "true",
     },
   },
 });
