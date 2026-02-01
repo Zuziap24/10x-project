@@ -61,16 +61,18 @@ jobs:
         uses: ./.github/actions/setup-node
 
       - name: Create .env.test file
+        shell: bash
         run: |
-          cat << EOF > .env.test
-          SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
-          OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
-          E2E_USERNAME=${{ secrets.E2E_USERNAME }}
-          E2E_PASSWORD=${{ secrets.E2E_PASSWORD }}
-          E2E_USERNAME_ID=${{ secrets.E2E_USERNAME_ID }}
-          USE_MOCK_AI=true
-          EOF
+          {
+            echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}"
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}"
+            echo "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}"
+            echo "E2E_USERNAME=${{ secrets.E2E_USERNAME }}"
+            echo "E2E_PASSWORD=${{ secrets.E2E_PASSWORD }}"
+            echo "E2E_USERNAME_ID=${{ secrets.E2E_USERNAME_ID }}"
+            echo "USE_MOCK_AI=true"
+          } > .env.test
+          echo "Created .env.test file"
 
       - name: Install Playwright Chromium browser
         run: npx playwright install chromium --with-deps
