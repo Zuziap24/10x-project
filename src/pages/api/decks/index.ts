@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import type { DeckDto, CreateDeckCommand, PaginatedResponse, ApiError } from "../../../types";
 import { z } from "zod";
 import { Logger } from "../../../lib/logger";
+import { isFeatureEnabled, featureDisabledResponse } from "../../../features";
 
 export const prerender = false;
 
@@ -22,9 +23,15 @@ const createDeckSchema = z.object({
  *
  * @returns 200 - Success with paginated deck data
  * @returns 401 - Authentication error
+ * @returns 403 - Feature disabled
  * @returns 500 - Internal server error
  */
 export const GET: APIRoute = async (context) => {
+  // Check feature flag
+  if (!isFeatureEnabled("collections")) {
+    return featureDisabledResponse("Collections");
+  }
+
   try {
     // Authenticate user via Supabase
     const supabase = context.locals.supabase;
@@ -130,9 +137,15 @@ export const GET: APIRoute = async (context) => {
  * @returns 201 - Success with created deck data
  * @returns 400 - Validation error
  * @returns 401 - Authentication error
+ * @returns 403 - Feature disabled
  * @returns 500 - Internal server error
  */
 export const POST: APIRoute = async (context) => {
+  // Check feature flag
+  if (!isFeatureEnabled("collections")) {
+    return featureDisabledResponse("Collections");
+  }
+
   try {
     // Authenticate user via Supabase
     const supabase = context.locals.supabase;

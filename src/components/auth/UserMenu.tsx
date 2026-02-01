@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import { User, Library } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogoutButton } from "./LogoutButton";
+import { isFeatureEnabled } from "@/features";
 
 // ------------------------------------------------------------------
 // Component Props
@@ -34,6 +35,7 @@ function getInitials(email: string): string {
 
 export function UserMenu({ userEmail }: UserMenuProps) {
   const initials = getInitials(userEmail);
+  const collectionsEnabled = isFeatureEnabled("collections");
 
   return (
     <DropdownMenu>
@@ -58,6 +60,14 @@ export function UserMenu({ userEmail }: UserMenuProps) {
             <span>Profile</span>
           </a>
         </DropdownMenuItem>
+        {collectionsEnabled && (
+          <DropdownMenuItem asChild>
+            <a href="/decks" className="cursor-pointer">
+              <Library className="mr-2 h-4 w-4" />
+              <span>My Decks</span>
+            </a>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="p-0">
           <LogoutButton variant="ghost" size="sm" className="w-full justify-start" />

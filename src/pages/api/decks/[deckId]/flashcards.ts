@@ -7,6 +7,7 @@ import type {
   ApiError,
   FlashcardSource,
 } from "../../../../types";
+import { isFeatureEnabled, featureDisabledResponse } from "../../../../features";
 
 export const prerender = false;
 
@@ -43,6 +44,11 @@ const createFlashcardSchema = z.object({
  * - order: "asc" | "desc" (default "desc")
  */
 export const GET: APIRoute = async (context) => {
+  // Check feature flag
+  if (!isFeatureEnabled("collections")) {
+    return featureDisabledResponse("Collections");
+  }
+
   try {
     const deckId = context.params.deckId;
 
@@ -172,6 +178,11 @@ export const GET: APIRoute = async (context) => {
  * Creates a new flashcard manually.
  */
 export const POST: APIRoute = async (context) => {
+  // Check feature flag
+  if (!isFeatureEnabled("collections")) {
+    return featureDisabledResponse("Collections");
+  }
+
   try {
     const deckId = context.params.deckId;
 

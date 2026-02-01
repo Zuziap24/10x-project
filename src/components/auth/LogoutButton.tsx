@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { isFeatureEnabled } from "@/features";
 
 // ------------------------------------------------------------------
 // Component Props
@@ -39,6 +40,11 @@ export function LogoutButton({ variant = "ghost", size = "default", className }:
       setIsLoading(false);
     }
   };
+
+  // Feature flag check must be AFTER all hooks to satisfy Rules of Hooks
+  if (!isFeatureEnabled("auth")) {
+    return null;
+  }
 
   return (
     <Button

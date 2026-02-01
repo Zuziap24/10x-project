@@ -5,6 +5,8 @@ import { calculateSHA256 } from "../../../../lib/utils/hash";
 import { checkGenerationRateLimit } from "../../../../lib/utils/rate-limit";
 import { Logger } from "../../../../lib/logger";
 import type { GenerateFlashcardsResponseDto, ApiError } from "../../../../types";
+import { isFeatureEnabled, featureDisabledResponse } from "../../../../features";
+
 export const prerender = false;
 
 const logger = new Logger("api/decks/generate");
@@ -26,13 +28,18 @@ const logger = new Logger("api/decks/generate");
  * @returns 200 - Success with generation_id and suggestions
  * @returns 400 - Validation error (invalid input)
  * @returns 401 - Authentication error (invalid/expired token)
- * @returns 403 - Authorization error (deck belongs to another user)
+ * @returns 403 - Authorization error (deck belongs to another user) or Feature disabled
  * @returns 404 - Deck not found
  * @returns 422 - AI generation failed
  * @returns 429 - Rate limit exceeded
  * @returns 500 - Internal server error
  */
 export const POST: APIRoute = async (context) => {
+  // Check feature flag
+  if (!isFeatureEnabled("collections")) {
+    return featureDisabledResponse("Collections");
+  }
+
   try {
     // Step 1: Extract and validate deck ID from URL params
     const deckId = context.params.deckId;

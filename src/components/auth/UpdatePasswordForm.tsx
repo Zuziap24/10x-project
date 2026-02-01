@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { isFeatureEnabled } from "@/features";
 
 // ------------------------------------------------------------------
 // Validation Schema
@@ -78,6 +79,18 @@ export function UpdatePasswordForm() {
       setIsLoading(false);
     }
   }, []);
+
+  // Feature flag check must be AFTER all hooks to satisfy Rules of Hooks
+  if (!isFeatureEnabled("auth")) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Update Password Disabled</CardTitle>
+          <CardDescription>Password update features are currently unavailable.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
     <Card>

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { forgotPasswordSchema, type ForgotPasswordFormData } from "@/lib/validators/auth.validator";
+import { isFeatureEnabled } from "@/features";
 
 // ------------------------------------------------------------------
 // Component Props
@@ -73,6 +74,18 @@ export function ForgotPasswordForm({ onSubmit }: ForgotPasswordFormProps) {
     },
     [onSubmit]
   );
+
+  // Feature flag check must be AFTER all hooks to satisfy Rules of Hooks
+  if (!isFeatureEnabled("auth")) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Password Reset Disabled</CardTitle>
+          <CardDescription>Password reset features are currently unavailable.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   if (isSuccess) {
     return (

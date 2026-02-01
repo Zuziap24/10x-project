@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { loginSchema, type LoginFormData } from "@/lib/validators/auth.validator";
+import { isFeatureEnabled } from "@/features";
 
 // ------------------------------------------------------------------
 // Component Props
@@ -74,6 +75,18 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
     },
     [onSubmit]
   );
+
+  // Feature flag check must be AFTER all hooks to satisfy Rules of Hooks
+  if (!isFeatureEnabled("auth")) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Log In Disabled</CardTitle>
+          <CardDescription>Authentication features are currently unavailable.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
     <Card>

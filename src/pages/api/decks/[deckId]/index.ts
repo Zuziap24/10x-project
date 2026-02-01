@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import type { DeckDto, ApiError } from "../../../../types";
+import { isFeatureEnabled, featureDisabledResponse } from "../../../../features";
 
 export const prerender = false;
 
@@ -14,11 +15,16 @@ export const prerender = false;
  *
  * @returns 200 - Success with deck data
  * @returns 401 - Authentication error
- * @returns 403 - Authorization error (deck belongs to another user)
+ * @returns 403 - Authorization error (deck belongs to another user) or Feature disabled
  * @returns 404 - Deck not found
  * @returns 500 - Internal server error
  */
 export const GET: APIRoute = async (context) => {
+  // Check feature flag
+  if (!isFeatureEnabled("collections")) {
+    return featureDisabledResponse("Collections");
+  }
+
   try {
     // Step 1: Extract and validate deck ID from URL params
     const deckId = context.params.deckId;

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { registerSchema, type RegisterFormData } from "@/lib/validators/auth.validator";
+import { isFeatureEnabled } from "@/features";
 
 // ------------------------------------------------------------------
 // Component Props
@@ -86,6 +87,18 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     },
     [onSubmit]
   );
+
+  // Feature flag check must be AFTER all hooks to satisfy Rules of Hooks
+  if (!isFeatureEnabled("auth")) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Registration Disabled</CardTitle>
+          <CardDescription>New account registration is currently unavailable.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
     <Card>
