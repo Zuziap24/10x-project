@@ -137,10 +137,13 @@ export const POST: APIRoute = async (context) => {
     const sourceTextHash = calculateSHA256(source_text);
     const sourceTextLength = source_text.length;
 
-    // Step 7: Generate flashcards using AI service (with mocks in development)
-    const useMockAI = import.meta.env.USE_MOCK_AI !== "false";
-    console.log("[Generate Endpoint] useMockAI:", useMockAI, "model:", model);
-    const aiService = new AIGenerationService(import.meta.env.OPENROUTER_API_KEY || "", useMockAI);
+    // Step 7: Generate flashcards using AI service (with mocks in development/testing)
+    // Check both import.meta.env and process.env for USE_MOCK_AI (CI may use process.env)
+    const useMockAIEnv = import.meta.env.USE_MOCK_AI ?? process.env.USE_MOCK_AI;
+    const useMockAI = useMockAIEnv !== "false";
+    console.log("[Generate Endpoint] useMockAI:", useMockAI, "env value:", useMockAIEnv, "model:", model);
+    const apiKey = import.meta.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || "";
+    const aiService = new AIGenerationService(apiKey, useMockAI);
 
     const { suggestions, generationDuration } = await aiService.generateFlashcards({
       sourceText: source_text,

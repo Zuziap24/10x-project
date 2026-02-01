@@ -18,8 +18,8 @@ export default defineConfig({
   // Test directory
   testDir: "./e2e",
 
-  // Timeout per test
-  timeout: 30 * 1000,
+  // Timeout per test - increased for AI generation which can take longer
+  timeout: 90 * 1000,
 
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
