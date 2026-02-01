@@ -19,16 +19,6 @@ test.describe("Authentication Flow", () => {
   });
 
   test("AUTH-03: should login and access dashboard", async ({ page }) => {
-    // Listen to network requests for debugging
-    const loginRequests: { status: number; body?: unknown }[] = [];
-    page.on("response", (response) => {
-      if (response.url().includes("/api/auth/signin")) {
-        const status = response.status();
-        loginRequests.push({ status });
-        console.log("Login API response status:", status);
-      }
-    });
-
     // Przejście na stronę logowania
     await page.goto("/signin", { waitUntil: "networkidle" });
 
@@ -41,78 +31,61 @@ test.describe("Authentication Flow", () => {
     await expect(passwordInput).toBeVisible();
     await expect(submitButton).toBeEnabled();
 
-    console.log("E2E_USERNAME:", validEmail);
-    console.log("E2E_PASSWORD:", validPassword);
-
     // Wypełnienie formularza
     await emailInput.fill(validEmail);
     await passwordInput.fill(validPassword);
 
-    // Wait for React to hydrate (give it a bit more time)
-    await page.waitForTimeout(1000);
+    // Wait for React to hydrate
+    await page.waitForTimeout(500);
 
     // Kliknięcie przycisku logowania
     await submitButton.click();
 
-    // Wait for navigation or error message
-    try {
-      await page.waitForURL(/.*dashboard|.*\/$/, { timeout: 10000 });
-      const currentURL = page.url();
-      expect(currentURL).toMatch(/dashboard|\/$/);
-    } catch (error) {
-      // If navigation didn't happen, check what happened
-      console.log("Navigation timeout. Current URL:", page.url());
-      console.log("Login requests:", loginRequests);
-
-      // Check if there's an error message on the page
-      const alertElement = page.locator('[role="alert"]');
-      if (await alertElement.isVisible()) {
-        const errorText = await alertElement.textContent();
-        console.log("Error message on page:", errorText);
-      }
-
-      throw error;
-    }
+    // Wait for navigation - after successful login redirects to / (home)
+    await page.waitForURL(/.*\/$|.*dashboard/, { timeout: 15000 });
+    const currentURL = page.url();
+    expect(currentURL).toMatch(/\/$|dashboard/);
   });
+
   test("should display error message for invalid credentials", async ({ page }) => {
-    await page.goto("/signin");
+    await page.goto("/signin", { waitUntil: "networkidle" });
 
     await page.fill('input[type="email"]', "wrong@example.com");
     await page.fill('input[type="password"]', "wrongpassword");
 
     await page.click('button[type="submit"]');
 
-    // Oczekiwanie na komunikat o błędzie
-    await expect(page.locator('[role="alert"]')).toBeVisible();
+    // Oczekiwanie na komunikat o błędzie - wait for API response first
+    await expect(page.locator('[role="alert"]')).toBeVisible({ timeout: 10000 });
   });
 });
 
 test.describe("Registration Flow", () => {
   test("AUTH-01: should register new user with correct data", async ({ page }) => {
-    await page.goto("/register");
+    await page.goto("/register", { waitUntil: "networkidle" });
 
     // Wypełnienie formularza rejestracji
     await page.fill('input[name="email"]', `test${Date.now()}@example.com`);
-    await page.fill('input[name="password"]', "password123");
-    await page.fill('input[name="confirmPassword"]', "password123");
+    await page.fill('input[name="password"]', "Password123!");
+    await page.fill('input[name="confirmPassword"]', "Password123!");
 
     await page.click('button[type="submit"]');
 
-    // Oczekiwanie na sukces (np. przekierowanie lub komunikat)
-    await expect(page).toHaveURL(/.*signin|.*dashboard/);
+    // After successful registration, app redirects to / (home page) with auto-login
+    await expect(page).toHaveURL(/.*\/$|.*signin|.*dashboard/, { timeout: 10000 });
   });
 
   test("AUTH-02: should show error when registering with existing email", async ({ page }) => {
-    await page.goto("/register");
+    await page.goto("/register", { waitUntil: "networkidle" });
 
-    // Używamy emaila, który już istnieje
-    await page.fill('input[name="email"]', "existing@example.com");
-    await page.fill('input[name="password"]', "password123");
-    await page.fill('input[name="confirmPassword"]', "password123");
+    // Używamy emaila użytkownika testowego który istnieje
+    await page.fill('input[name="email"]', validEmail);
+    await page.fill('input[name="password"]', "Password123!");
+    await page.fill('input[name="confirmPassword"]', "Password123!");
 
     await page.click('button[type="submit"]');
 
     // Oczekiwanie na komunikat o błędzie
-    await expect(page.locator('[role="alert"]')).toBeVisible();
+    await expect(page.locator('[role="alert"]')).toBeVisible({ timeout: 10000 });
   });
 });

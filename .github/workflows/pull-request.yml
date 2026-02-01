@@ -33,7 +33,7 @@ jobs:
         run: npx vitest run --coverage --coverage.thresholds.100=false --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0
 
       - name: Upload unit test coverage
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: unit-coverage
           path: coverage/
@@ -48,6 +48,9 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      E2E_USERNAME: ${{ secrets.E2E_USERNAME }}
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+      E2E_USERNAME_ID: ${{ secrets.E2E_USERNAME_ID }}
       BASE_URL: http://localhost:3001
     steps:
       - name: Checkout repository
@@ -63,7 +66,7 @@ jobs:
         run: npm run test:e2e
 
       - name: Upload E2E test report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: e2e-report
@@ -81,13 +84,13 @@ jobs:
       pull-requests: write
     steps:
       - name: Download unit test coverage
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: unit-coverage
           path: unit-coverage/
 
       - name: Download E2E test report
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           name: e2e-report
           path: e2e-report/
