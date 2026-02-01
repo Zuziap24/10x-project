@@ -24,7 +24,7 @@ export const POST: APIRoute = async (context) => {
       sourceText: source_text,
       model,
       count,
-    } as any);
+    } as Parameters<typeof ai.generateFlashcards>[0]);
 
     // Try to insert a generation record to Supabase for verification (best-effort)
     const supabase = context.locals.supabase;
@@ -47,7 +47,7 @@ export const POST: APIRoute = async (context) => {
       if (error) {
         insertResult = { success: false, error };
       } else {
-        insertResult = { success: true, id: (data as any)?.id };
+        insertResult = { success: true, id: data?.id };
       }
     } catch (e) {
       insertResult = { success: false, error: e };
