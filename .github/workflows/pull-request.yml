@@ -51,6 +51,7 @@ jobs:
       E2E_USERNAME: ${{ secrets.E2E_USERNAME }}
       E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
       E2E_USERNAME_ID: ${{ secrets.E2E_USERNAME_ID }}
+      USE_MOCK_AI: "true"
       BASE_URL: http://localhost:3001
     steps:
       - name: Checkout repository
@@ -58,6 +59,18 @@ jobs:
 
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
+
+      - name: Create .env.test file
+        run: |
+          cat << EOF > .env.test
+          SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+          OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+          E2E_USERNAME=${{ secrets.E2E_USERNAME }}
+          E2E_PASSWORD=${{ secrets.E2E_PASSWORD }}
+          E2E_USERNAME_ID=${{ secrets.E2E_USERNAME_ID }}
+          USE_MOCK_AI=true
+          EOF
 
       - name: Install Playwright Chromium browser
         run: npx playwright install chromium --with-deps
