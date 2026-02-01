@@ -72,7 +72,9 @@ jobs:
             echo "E2E_USERNAME_ID=${{ secrets.E2E_USERNAME_ID }}"
             echo "USE_MOCK_AI=true"
           } > .env.test
-          echo "Created .env.test file"
+          echo "Created .env.test file with $(wc -l < .env.test) lines"
+          echo "Variables present (names only):"
+          grep -o '^[A-Z_]*' .env.test || true
 
       - name: Install Playwright Chromium browser
         run: npx playwright install chromium --with-deps
