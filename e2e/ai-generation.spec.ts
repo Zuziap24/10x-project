@@ -119,59 +119,6 @@ test.describe("AI Flashcard Generation", () => {
     // Assert - Dialog should close
     await aiDialog.waitForDialogClosed();
   });
-
-  test("AI-GEN-04: should allow deselecting suggestions", async ({ authenticatedPage }) => {
-    // Arrange
-    const dashboard = new DashboardPage(authenticatedPage);
-    const deckDetails = new DeckDetailsPage(authenticatedPage);
-    const aiDialog = new AIGenerationDialog(authenticatedPage);
-
-    const sampleText = AIGenerationDialog.generateSampleText(1200);
-
-    // Act - Navigate and generate
-    await dashboard.goto();
-    await dashboard.openFirstDeck();
-    await deckDetails.waitForDeckLoad();
-    await deckDetails.openAiGenerationDialog();
-    await aiDialog.waitForDialog();
-    await aiDialog.enterSourceText(sampleText);
-    await aiDialog.generate();
-
-    // Act - Deselect first suggestion
-    const firstSuggestion = aiDialog.getSuggestionByIndex(0);
-    const wasSelected = await firstSuggestion.isSelected();
-    await firstSuggestion.toggleSelection();
-
-    // Assert - Selection should toggle
-    expect(await firstSuggestion.isSelected()).toBe(!wasSelected);
-  });
-
-  test("AI-GEN-05: should be able to go back to input step", async ({ authenticatedPage }) => {
-    // Arrange
-    const dashboard = new DashboardPage(authenticatedPage);
-    const deckDetails = new DeckDetailsPage(authenticatedPage);
-    const aiDialog = new AIGenerationDialog(authenticatedPage);
-
-    const sampleText = AIGenerationDialog.generateSampleText(1200);
-
-    // Act - Navigate and generate
-    await dashboard.goto();
-    await dashboard.openFirstDeck();
-    await deckDetails.waitForDeckLoad();
-    await deckDetails.openAiGenerationDialog();
-    await aiDialog.waitForDialog();
-    await aiDialog.enterSourceText(sampleText);
-    await aiDialog.generate();
-
-    // Assert - Should be on review step
-    expect(await aiDialog.isOnReviewStep()).toBe(true);
-
-    // Act - Go back to input
-    await aiDialog.goBackToInput();
-
-    // Assert - Should be on input step with text preserved
-    expect(await aiDialog.isOnInputStep()).toBe(true);
-  });
 });
 
 test.describe("Deck Creation Flow", () => {

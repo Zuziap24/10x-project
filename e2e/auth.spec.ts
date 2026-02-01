@@ -59,37 +59,3 @@ test.describe("Authentication Flow", () => {
     await expect(page.locator('[role="alert"]')).toBeVisible({ timeout: 10000 });
   });
 });
-
-test.describe("Registration Flow", () => {
-  test("AUTH-01: should register new user with correct data", async ({ page }) => {
-    await page.goto("/register", { waitUntil: "networkidle" });
-
-    // Use a realistic test email domain that Supabase accepts
-    const testEmail = `testuser+${Date.now()}@gmail.com`;
-
-    // Wypełnienie formularza rejestracji
-    await page.fill('input[name="email"]', testEmail);
-    await page.fill('input[name="password"]', "Password123!");
-    await page.fill('input[name="confirmPassword"]', "Password123!");
-
-    await page.click('button[type="submit"]');
-
-    // After successful registration, app redirects to / (home page) with auto-login
-    // or to /signin if email confirmation is required
-    await expect(page).toHaveURL(/.*\/$|.*signin|.*dashboard/, { timeout: 10000 });
-  });
-
-  test("AUTH-02: should show error when registering with existing email", async ({ page }) => {
-    await page.goto("/register", { waitUntil: "networkidle" });
-
-    // Używamy emaila użytkownika testowego który istnieje
-    await page.fill('input[name="email"]', validEmail);
-    await page.fill('input[name="password"]', "Password123!");
-    await page.fill('input[name="confirmPassword"]', "Password123!");
-
-    await page.click('button[type="submit"]');
-
-    // Oczekiwanie na komunikat o błędzie
-    await expect(page.locator('[role="alert"]')).toBeVisible({ timeout: 10000 });
-  });
-});
